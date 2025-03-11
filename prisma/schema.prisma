@@ -7,3 +7,34 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling.
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection.
 }
+
+// => url (Primary Database Connection)
+// - The url is the main connection string Prisma uses to connect to the database.
+// - It typically points to a connection pool (e.g., pgbouncer for PostgreSQL).
+// - Connection pooling helps optimize performance by reusing existing database connections instead of opening new ones for each request.
+
+// => directUrl (Direct Database Connection)
+// - The directUrl is used when Prisma requires a direct connection to the database.
+// - This is useful for operations like migrations and introspection, where a connection pool might interfere.
+// - By default, Prisma Migrate and db pull (schema introspection) use directUrl instead of url to avoid issues with pooled connections.
+
+model Form {
+  id              Int              @id @default(autoincrement())
+  createdAt       DateTime         @default(now())
+  published       Boolean          @default(false)
+  name            String
+  description     String           @default("")
+  content         String           @default("[]")
+  shareURL        String           @default(uuid())
+  FormSubmissions FormSubmission[]
+
+  @@unique([name])
+}
+
+model FormSubmission {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  formId    Int
+  content   String
+  form      Form     @relation(fields: [formId], references: [id])
+}
