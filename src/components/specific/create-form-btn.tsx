@@ -27,17 +27,19 @@ import {
   createFormSchemaType,
 } from '@/schemas/create-form';
 import { FilePlus, LoaderCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Textarea } from '../ui/textarea';
 
 export default function CreateFormBtn() {
   const { formHook } = useCreateForm();
+  const router = useRouter();
 
   async function submitHandler(data: createFormSchemaType) {
     try {
       const formId = await CreateForm(data);
       toast.success('Form created successfully.');
-      console.log('Form ID:', formId);
+      router.push(`/builder/${formId}`);
     } catch (err) {
       toast.error('Something went wrong. Please try again.');
     }

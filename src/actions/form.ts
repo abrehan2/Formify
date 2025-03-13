@@ -26,3 +26,11 @@ export async function CreateForm(data: createFormSchemaType) {
 
   return form.id;
 }
+
+export async function GetForms() {
+  return await prisma.form.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+}
